@@ -2,22 +2,48 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
-using System;
 
 public class JumperAgent : Agent
 {
-    [SerializeField] float jumpSpeed = 4;
+
+    [SerializeField] float jumpSpeed;
+    GameObject spawnedObject;
+    bool spawnedObjectIsObstacle;
+
+    [Header("Objects")]
+    [SerializeField] GameObject obstacle;
+    [SerializeField] GameObject collectable;
+
+    public bool hitObject;
 
     public override void OnEpisodeBegin()
     {
+        Destroy(spawnedObject);
         resetPositionAndVelocity();
+        spawnObstacleOrCollectable();
     }
     private void resetPositionAndVelocity()
     {
         transform.localPosition = new Vector3(0, .5f, 0);
-        transform.localRotation = Quaternion.Euler(0, 0, 0);
+        transform.localRotation = Quaternion.Euler(0, 180, 0);
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+    }
+    
+    private void spawnObstacleOrCollectable()
+    {
+        if (Random.value >= .5f)
+        {
+            spawnedObject = Instantiate(obstacle);
+            spawnedObjectIsObstacle = true;
+        }
+        else
+        {
+            spawnedObject = Instantiate(collectable);
+            spawnedObjectIsObstacle = false;
+        }
+        if (Random.value >= .5f)
+            spawnedObject.transform.position += Vector3.up * 1.2f;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -27,7 +53,6 @@ public class JumperAgent : Agent
     
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        // Acties, size = 2
         int jumpPressed;
         jumpPressed = actionBuffers.DiscreteActions[0];
         if(jumpPressed >= 1)
@@ -35,36 +60,56 @@ public class JumperAgent : Agent
             GetComponent<Rigidbody>().linearVelocity = new Vector3(GetComponent<Rigidbody>().linearVelocity.x, jumpSpeed, GetComponent<Rigidbody>().linearVelocity.z);
         }
 
-        /*
-        if (transform.localPosition.y < 0)
+        if (hitObject)
         {
-            AddReward(-2f);
-            EndEpisode();
-            return;
+            hitObject = false;
+            if (spawnedObjectIsObstacle)
+            {
+                AddReward(-1);
+                EndEpisode();
+            }
+            else
+            {
+                AddReward(1);
+                EndEpisode(); //needed?
+            }
         }
 
-        // target bereikt
-        float distanceToTarget = Vector3.Distance(transform.localPosition, Target.localPosition);
-        if (distanceToTarget <= 1f)
+        if (spawnedObject.transform.position.z >= 5)
         {
-            AddReward(2f);
-            Target.localPosition += Vector3.down * 4;
-            return;
+            Destroy(spawnedObject);
+            endEpisodeAndGiveReward();
         }
-        
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, goalLayer))
+
+        //failsafe
+        if (spawnedObject == null )
         {
-            AddReward(1f);
-            EndEpisode();
-            return;
-        }*/
+            endEpisodeAndGiveReward();
+        }
+    }
+
+    private void endEpisodeAndGiveReward()
+    {
+        if (spawnedObjectIsObstacle)
+        {
+            //didn't touch obstacle during episode
+            AddReward(1);
+        } else
+        {
+            //didn't collect collectable
+            AddReward(-1);
+        }
+        EndEpisode();
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut[0] = Convert.ToInt32(Input.GetButton("Jump"));
-        Debug.Log(discreteActionsOut[0]);
+        discreteActionsOut[0] = System.Convert.ToInt32(Input.GetKey(KeyCode.Space));
+        
+        if(spawnedObject == null)
+        {
+            spawnObstacleOrCollectable();
+        }
     }
 }
