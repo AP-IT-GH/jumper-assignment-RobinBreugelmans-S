@@ -206,7 +206,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0922957, y: -0.7010571, z: 0.0922958, w: 0.70105785}
-  m_LocalPosition: {x: 9.5, y: 4, z: 0}
+  m_LocalPosition: {x: 7.5, y: 2.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -291,7 +291,7 @@ Transform:
   m_GameObject: {fileID: 373112588}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000014901161, y: 1, z: -1.1368684e-13, w: 0.0000029653313}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -359,7 +359,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
-  jumpSpeed: 8
+  jumpSpeed: 4
   obstacle: {fileID: 1721419910728173368, guid: e4282f789f17ecf4483a2929568ff96c, type: 3}
   collectable: {fileID: 6338034198077359646, guid: daa7d5365fba3f64d806495913888882, type: 3}
   hitObject: 0
@@ -681,7 +681,7 @@ GameObject:
   - component: {fileID: 1683472046}
   - component: {fileID: 1683472045}
   - component: {fileID: 1683472044}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

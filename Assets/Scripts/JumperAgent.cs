@@ -8,6 +8,7 @@ public class JumperAgent : Agent
 
     [SerializeField] float jumpSpeed;
     GameObject spawnedObject;
+    [SerializeField] LayerMask groundLayer;
     bool spawnedObjectIsObstacle;
 
     [Header("Objects")]
@@ -24,7 +25,7 @@ public class JumperAgent : Agent
     }
     private void resetPositionAndVelocity()
     {
-        transform.localPosition = new Vector3(0, .5f, 0);
+        transform.localPosition = new Vector3(0, .5f, 4);
         transform.localRotation = Quaternion.Euler(0, 180, 0);
         GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
@@ -48,18 +49,26 @@ public class JumperAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.localPosition);
+        sensor.AddObservation(transform.localPosition.y);
+        sensor.AddObservation(spawnedObjectIsObstacle);
     }
     
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         int jumpPressed;
         jumpPressed = actionBuffers.DiscreteActions[0];
-        if(jumpPressed >= 1)
+        if(jumpPressed >= 1 &&
+            Physics.Raycast(
+                transform.position,
+                Vector3.down,
+                .6f,
+                groundLayer
+            )
+        )
         {
             GetComponent<Rigidbody>().linearVelocity = new Vector3(GetComponent<Rigidbody>().linearVelocity.x, jumpSpeed, GetComponent<Rigidbody>().linearVelocity.z);
         }
-
+        
         if (hitObject)
         {
             hitObject = false;
