@@ -17,6 +17,13 @@ public class JumperAgent : Agent
 
     public bool hitObject;
 
+    /*public override void Initialize()
+    {
+        var actionSpec = ActionSpec.MakeDiscrete(1);
+        SetActionSpec(actionSpec);
+        base.Initialize();
+    }*/
+
     public override void OnEpisodeBegin()
     {
         Destroy(spawnedObject);
@@ -43,8 +50,6 @@ public class JumperAgent : Agent
             spawnedObject = Instantiate(collectable);
             spawnedObjectIsObstacle = false;
         }
-        if (Random.value >= .5f)
-            spawnedObject.transform.position += Vector3.up * 1.2f;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -55,9 +60,10 @@ public class JumperAgent : Agent
     
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        int jumpPressed;
+        int jumpPressed; // 0 = don't jump, 1 = jump
         jumpPressed = actionBuffers.DiscreteActions[0];
-        if(jumpPressed >= 1 &&
+        //Debug.Log(jumpPressed);
+        if(jumpPressed == 1 &&
             Physics.Raycast(
                 transform.position,
                 Vector3.down,
@@ -74,13 +80,13 @@ public class JumperAgent : Agent
             hitObject = false;
             if (spawnedObjectIsObstacle)
             {
-                AddReward(-1);
+                //AddReward(-1);
                 EndEpisode();
             }
             else
             {
                 AddReward(1);
-                EndEpisode(); //needed?
+                EndEpisode();
             }
         }
 
@@ -106,7 +112,7 @@ public class JumperAgent : Agent
         } else
         {
             //didn't collect collectable
-            AddReward(-1);
+            //AddReward(-1);
         }
         EndEpisode();
     }
