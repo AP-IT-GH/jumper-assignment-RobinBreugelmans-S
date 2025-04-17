@@ -5,31 +5,25 @@ using Unity.MLAgents.Actuators;
 
 public class JumperAgent : Agent
 {
-
-    [SerializeField] float jumpSpeed;
-    GameObject spawnedObject;
+    [SerializeField] float jumpSpeed = 6f;
     [SerializeField] LayerMask groundLayer;
-    bool spawnedObjectIsObstacle;
 
     [Header("Objects")]
     [SerializeField] GameObject obstacle;
     [SerializeField] GameObject collectable;
 
-    public bool hitObject;
-
-    /*public override void Initialize()
-    {
-        var actionSpec = ActionSpec.MakeDiscrete(1);
-        SetActionSpec(actionSpec);
-        base.Initialize();
-    }*/
+    GameObject spawnedObject;
+    bool spawnedObjectIsObstacle;
+    bool hitObject;
 
     public override void OnEpisodeBegin()
     {
+        hitObject = false;
         Destroy(spawnedObject);
         resetPositionAndVelocity();
         spawnObstacleOrCollectable();
     }
+
     private void resetPositionAndVelocity()
     {
         transform.localPosition = new Vector3(0, .5f, 4);
@@ -50,6 +44,15 @@ public class JumperAgent : Agent
             spawnedObject = Instantiate(collectable);
             spawnedObjectIsObstacle = false;
         }
+        spawnedObject.transform.position = new Vector3(0, 0.5f, -5);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.GetComponent<Move>() != null)
+        {
+            hitObject = true;
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -60,10 +63,8 @@ public class JumperAgent : Agent
     
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        int jumpPressed; // 0 = don't jump, 1 = jump
-        jumpPressed = actionBuffers.DiscreteActions[0];
-        //Debug.Log(jumpPressed);
-        if(jumpPressed == 1 &&
+        // 0 = don't jump, 1 = jump
+        if(actionBuffers.DiscreteActions[0] == 1 &&
             Physics.Raycast(
                 transform.position,
                 Vector3.down,
@@ -77,20 +78,15 @@ public class JumperAgent : Agent
         
         if (hitObject)
         {
-            hitObject = false;
-            if (spawnedObjectIsObstacle)
+            if (!spawnedObjectIsObstacle)
             {
-                //AddReward(-1);
-                EndEpisode();
-            }
-            else
-            {
+                //give reward when hitting collectable
                 AddReward(1);
-                EndEpisode();
             }
+            EndEpisode();
         }
 
-        if (spawnedObject.transform.position.z >= 5)
+        if (spawnedObject.transform.position.z >= 6)
         {
             Destroy(spawnedObject);
             endEpisodeAndGiveReward();
@@ -109,10 +105,6 @@ public class JumperAgent : Agent
         {
             //didn't touch obstacle during episode
             AddReward(1);
-        } else
-        {
-            //didn't collect collectable
-            //AddReward(-1);
         }
         EndEpisode();
     }

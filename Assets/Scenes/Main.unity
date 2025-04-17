@@ -334,7 +334,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 1
+  m_BehaviorType: 0
   m_BehaviorName: JumperAgent
   TeamId: 0
   m_UseChildSensors: 1
@@ -357,13 +357,12 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
-  jumpSpeed: 5
+  jumpSpeed: 6
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   obstacle: {fileID: 1721419910728173368, guid: e4282f789f17ecf4483a2929568ff96c, type: 3}
   collectable: {fileID: 6338034198077359646, guid: daa7d5365fba3f64d806495913888882, type: 3}
-  hitObject: 0
 --- !u!65 &373112593
 BoxCollider:
   m_ObjectHideFlags: 0
