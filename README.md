@@ -152,6 +152,7 @@ if(actionBuffers.DiscreteActions[0] == 1 &&
 }
 ```
 This will make the agent jump if the discrete action is 1, by giving them the JumpSpeed.
+
 22. The .6f in the raycast should be ```height_of_the_agent / 2 + .1f```, edit if needed.
 23. Add the following code to the OnActionReceived method:
 ```cs
@@ -178,6 +179,7 @@ if (spawnedObject == null )
 }
 ```
 This will end the episode if the agent hits a collectable/obstacle and give them the corresponding reward when the agents hits a collectable/obstacle or if agent jumps over it.
+
 24. The 6 in the 2nd if statement should be the z-position a bit behind the agent, edit if needed.
 25. Override the Heuristic method
 ```cs
@@ -194,6 +196,7 @@ public override void Heuristic(in ActionBuffers actionsOut)
 ```
 This method will make it so you can control the agent yourself if BehaviourType in BehaviourParemeters is set to Heuristic Only.
 Here we will make the agent jump when Space is pressed.
+
 26. Set the BehaviourType in BehaviourParemeters to Heuristic Only.
 27. Run the scene and test if everything works.
 28. Go into the folder of the unity project.
@@ -229,6 +232,7 @@ behaviors:
     summary_freq: 200
 ```
 This is the configuration for the agent's behaviour.
+
 26. Open an anaconda terminal.
 27. cd into the MLTraining folder.
 28. Run ```mlagents-learn ./config/JumperAgent.yaml --run-id=Jumper```.
