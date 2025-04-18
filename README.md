@@ -1,6 +1,7 @@
 ### Jumper
 ![Example of agent jumping over obstacle](images/exampleJump.png)
 ![Example of agent collecting a collectable](images/exampleCollect.png)
+
 The blue cube is the jumper agent, the red line is an obstacle, the green box is a collectable.
 The agent gets rewarded for jumping over obstacles and collecting collectables, no reward is given if it jumps over the collectable or hits the obstacle.
 
@@ -243,4 +244,5 @@ This is the configuration for the agent's behaviour.
 33. Run  ```python -m tensorboard.main --logdir=results``` to see the graph of the agent's reward over time.
 ### Training
 ![Reward over time](images/cumulativeReward.png)
+
 In the beginning the agent was constantly jumping, since it was constantly switching between 0 and 1 for it's discrete action of jumping, after ~10k steps it started understanding it's actions and rewards more, as the cumulative rewards starts to rise here. It starts rising a bit slowly, but at ~18.5k steps it starts to rise quite quickly, until it reaches ~29k steps, here is rises very slowly for a ~8k steps, then stagnates with a reward of ~0.85.
